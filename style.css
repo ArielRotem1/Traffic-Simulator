@@ -1,0 +1,22 @@
+#nav {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#title {
+  color: Crimson;
+}
+
+.nav_buttons {
+  width: 60px;
+  height: 35px;
+  color: DarkSlateBlue;
+  font-weight: bold;
+}
+
+canvas {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
