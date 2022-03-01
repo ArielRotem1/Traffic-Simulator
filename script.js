@@ -75,8 +75,9 @@ class Road {
       if(maxDistCarCanMove.status == "no speed"){
         //can't move at all
         //reduce the speed
-        if(car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING == 0)
+        if(car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING == 0){
           car.reduceSpeed();
+        }
         else car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING--;
         continue;
       }
@@ -244,6 +245,7 @@ class Car {
     this.acceleration = (size / 50);
     this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN = 10;
     this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
+    
     
     //1 - top, 2 - right, 3 - bottom, 4 - left
     this.outFrom = -1;
@@ -558,6 +560,7 @@ class Car {
     
     this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN;
     
+    
     if (this.outFrom == 2){
       this.speedX -= this.acceleration;
       if(this.speedX < 0) this.speedX = 0;
@@ -821,6 +824,14 @@ class Drawer {
       else if(grid[rowOfMouse][columnOfMouse].dir == 2){
         grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
       }
+      else{
+        if(Math.random() < 0.5){
+          grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
+        }
+        else{
+          grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
+        }
+      }
     }
   }
 }
@@ -846,6 +857,7 @@ function start() {
 }
 
 function game() {
+  clearCanvas();
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j]) {
@@ -862,6 +874,10 @@ function game() {
       }
     }
   }
+}
+
+function clearCanvas(){
+  drawer.drawSquare(0, 0, drawer.canvasWidth, drawer.canvasHeight, "AliceBlue");
 }
 
 function setNavButtonsClick() {
