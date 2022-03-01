@@ -216,13 +216,28 @@ class Road {
     let startY = this.row * size + borderWidth;
     let width = size - borderWidth;
     let height = size - borderWidth;
+    
+    let lineInMiddleWidth = 5;
+    let lineInMiddleHeight = 10;
 
     if (this.column == grid[0].length - 1) width -= borderWidth;
     if (this.row == grid.length - 1) height -= borderWidth;
+    
+    drawer.drawSquare(startX, startY, width, height, "black");
 
-    if(this.dir == 1) drawer.drawSquare(startX, startY, width, height, "black");
-    else if(this.dir == 2) drawer.drawSquare(startX, startY, width, height, "rgb(136,92,92)");
-    else if(this.dir == 3) drawer.drawSquare(startX, startY, width, height, "rgb(160,50,50)");
+    if(this.dir == 1){
+      for(let i = lineInMiddleHeight; i < width - lineInMiddleHeight; i += (lineInMiddleHeight * 2)){
+        drawer.drawSquare(startX + i, startY + (height / 2) - (lineInMiddleWidth / 2), lineInMiddleHeight, lineInMiddleWidth, "white");
+      }
+    }
+    else if(this.dir == 2){
+      for(let i = lineInMiddleHeight; i < width - lineInMiddleHeight; i += (lineInMiddleHeight * 2)){
+        drawer.drawSquare(startX + (width / 2) - (lineInMiddleWidth / 2), startY + i, lineInMiddleWidth, lineInMiddleHeight, "white");
+      }
+    }
+    else if(this.dir == 3){
+      drawer.drawCircle(startX + (width / 2), startY + (height / 2), lineInMiddleWidth, "white");
+    }
   }
 
   drawCars() {
@@ -606,7 +621,7 @@ class Car {
     if (this.speedX > 0) {
       drawer.drawSquare(
         startX + this.x,
-        startY + this.y - (size / 5) - this.height,
+        startY + this.y - (size / 6) - this.height,
         this.width,
         this.height,
         this.color
@@ -614,14 +629,14 @@ class Car {
     } else if (this.speedX < 0) {
       drawer.drawSquare(
         startX + this.x,
-        startY + this.y + (size / 5) + borderWidth,
+        startY + this.y + (size / 6) + borderWidth,
         this.width,
         this.height,
         this.color
       );
     } else if (this.speedY > 0) {
       drawer.drawSquare(
-        startX + this.x + (size / 5) + borderWidth,
+        startX + this.x + (size / 6) + borderWidth,
         startY + this.y,
         this.height,
         this.width,
@@ -629,7 +644,7 @@ class Car {
       );
     } else if (this.speedY < 0) {
       drawer.drawSquare(
-        ((startX + this.x) - (size / 5)) - this.height,
+        ((startX + this.x) - (size / 6)) - this.height,
         startY + this.y,
         this.height,
         this.width,
@@ -762,6 +777,13 @@ class Drawer {
   drawSquare(startX, startY, width, height, color) {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(startX, startY, width, height);
+  }
+  
+  drawCircle(x, y, radius, color){
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    this.ctx.fill();
   }
 
   canvasHasBeenClicked(mousePos) {
