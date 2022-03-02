@@ -254,14 +254,14 @@ class Drawer {
           1
         );
       else {
-        if (grid[rowOfMouse][columnOfMouse].dir == 1 && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].changeDir(2);
+        if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
+          grid[rowOfMouse][columnOfMouse].setRoadType(2);
         }
-        else if (grid[rowOfMouse][columnOfMouse].dir == 2 && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].changeDir(3);
+        else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
+          grid[rowOfMouse][columnOfMouse].setRoadType(3);
         }
-        else if (grid[rowOfMouse][columnOfMouse].dir == 3 && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].changeDir(1);
+        else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
+          grid[rowOfMouse][columnOfMouse].setRoadType(1);
         }
       }
     }
@@ -292,10 +292,10 @@ class Drawer {
       let rnd = Math.random();
       if (rnd < 0.5) speed *= -1;
 
-      if (grid[rowOfMouse][columnOfMouse].dir == 1) {
+      if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL) {
         grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
       }
-      else if (grid[rowOfMouse][columnOfMouse].dir == 2) {
+      else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL) {
         grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
       }
       else {
@@ -312,6 +312,14 @@ class Drawer {
 
 
 class Car {
+
+  static MovmentDirection = {
+    UP: 0,
+    LEFT: 1,
+    DOWN: 2,
+    RIGHT: 3
+  }
+
   constructor(speedX, speedY, forceX, forceY, color) {
     this.width = 20;
     this.height = 10;
@@ -321,9 +329,7 @@ class Car {
     this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN = 10;
     this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
 
-
-    //1 - top, 2 - right, 3 - bottom, 4 - left
-    this.outFrom = -1;
+    this.movmentDirection = -1;
 
     this.hasBeenMoved = false;
 
@@ -351,7 +357,7 @@ class Car {
   canMove(currRoad) {
 
     //if car is moving right
-    if (this.outFrom == 2) {
+    if (this.movmentDirection == Car.MovmentDirection.RIGHT) {
       //get the index of this car in the cars array of this road
       let indexCar = this.getIndexOfThisInArrayByXY(currRoad.cars);
 
@@ -415,7 +421,7 @@ class Car {
       }
     }
     //if car is moving left
-    else if (this.outFrom == 4) {
+    else if (this.movmentDirection == Car.MovmentDirection.LEFT) {
       //get the index of this car in the cars array of this road
       let indexCar = this.getIndexOfThisInArrayByXY(currRoad.cars);
 
@@ -478,7 +484,7 @@ class Car {
       }
     }
     //if car is moving down
-    else if (this.outFrom == 3) {
+    else if (this.movmentDirection == Car.MovmentDirection.DOWN) {
       //get the index of this car in the cars array of this road
       let indexCar = this.getIndexOfThisInArrayByXY(currRoad.cars);
 
@@ -541,7 +547,7 @@ class Car {
       }
     }
     //if car is moving up
-    else if (this.outFrom == 1) {
+    else if (this.movmentDirection == Car.MovmentDirection.UP) {
       //get the index of this car in the cars array of this road
       let indexCar = this.getIndexOfThisInArrayByXY(currRoad.cars);
 
@@ -608,7 +614,7 @@ class Car {
 
   getCarBeforeThisCar(currRoad, indexThisCar) {
     for (let i = indexThisCar - 1; i > -1; i--) {
-      if (currRoad.cars[i].outFrom == this.outFrom) {
+      if (currRoad.cars[i].movmentDirection == this.movmentDirection) {
         return currRoad.cars[i];
       }
     }
@@ -622,7 +628,7 @@ class Car {
 
   getIndexOfThisInArrayByXY(cars) {
     for (let i in cars) {
-      if (cars[i].x == this.x && cars[i].y == this.y && cars[i].outFrom == this.outFrom) {
+      if (cars[i].x == this.x && cars[i].y == this.y && cars[i].movmentDirection == this.movmentDirection) {
         return i;
       }
     }
@@ -636,19 +642,19 @@ class Car {
     this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN;
 
 
-    if (this.outFrom == 2) {
+    if (this.movmentDirection == Car.MovmentDirection.RIGHT) {
       this.speedX -= this.acceleration;
       if (this.speedX < 0) this.speedX = 0;
     }
-    else if (this.outFrom == 4) {
+    else if (this.movmentDirection == Car.MovmentDirection.LEFT) {
       this.speedX += this.acceleration;
       if (this.speedX > 0) this.speedX = 0;
     }
-    else if (this.outFrom == 3) {
+    else if (this.movmentDirection == Car.MovmentDirection.DOWN) {
       this.speedY -= this.acceleration;
       if (this.speedY < 0) this.speedY = 0;
     }
-    else if (this.outFrom == 1) {
+    else if (this.movmentDirection == Car.MovmentDirection.UP) {
       this.speedY += this.acceleration;
       if (this.speedY > 0) this.speedY = 0;
     }
@@ -658,19 +664,19 @@ class Car {
 
     this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN;
 
-    if (this.outFrom == 2) {
+    if (this.movmentDirection == Car.MovmentDirection.RIGHT) {
       this.speedX += this.acceleration;
       if (this.speedX > this.MAX_SPEED) this.speedX = this.MAX_SPEED;
     }
-    else if (this.outFrom == 4) {
+    else if (this.movmentDirection == Car.MovmentDirection.LEFT) {
       this.speedX -= this.acceleration;
       if (this.speedX < -this.MAX_SPEED) this.speedX = -this.MAX_SPEED;
     }
-    else if (this.outFrom == 3) {
+    else if (this.movmentDirection == Car.MovmentDirection.DOWN) {
       this.speedY += this.acceleration;
       if (this.speedY > this.MAX_SPEED) this.speedY = this.MAX_SPEED;
     }
-    else if (this.outFrom == 1) {
+    else if (this.movmentDirection == Car.MovmentDirection.UP) {
       this.speedY -= this.acceleration;
       if (this.speedY < -this.MAX_SPEED) this.speedY = -this.MAX_SPEED;
     }
@@ -714,64 +720,62 @@ class Car {
   }
 }
 
-
 class Road {
-  constructor(row, column, dir) {
-    this.row = row;
-    this.column = column;
-    this.dir = dir;
-    this.cars = [];
 
-
-    if (this.dir == 1 || this.dir == 2)
-      this.acceptedNextRoadsDir = [this.dir, 3];
-    else if (this.dir == 3)
-      this.acceptedNextRoadsDir = [1, 2, this.dir];
+  static RoadType = {
+    HORIZONTAL: 1,
+    VERTICAL: 2,
+    JUNCTION_WITH_TRAFFIC_LIGHT: 3
   }
 
-  // outFrom: 2 - right, 4 - left, 3 - down, 1 - up
+  constructor(row, column, roadType) {
+    this.row = row;
+    this.column = column;
+    this.cars = [];
+    this.setRoadType(roadType);
+  }
 
-  changeDir(newDir) {
-    this.dir = newDir;
+  setRoadType(roadType) {
+    this.roadType = roadType;
 
-    if (this.dir == 1 || this.dir == 2)
-      this.acceptedNextRoadsDir = [this.dir, 3];
-    else if (this.dir == 3)
-      this.acceptedNextRoadsDir = [1, 2, this.dir];
+    if (this.roadType == Road.RoadType.HORIZONTAL || this.roadType == Road.RoadType.VERTICAL)
+      this.acceptedNextRoadsTypes = [this.roadType, Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT];
+    else if (this.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT)
+      this.acceptedNextRoadsTypes = [Road.RoadType.HORIZONTAL, Road.RoadType.VERTICAL, this.roadType];
   }
 
   addCar(car) {
     this.cars.push(car);
 
-    if (this.dir == 1) {
+    if (this.roadType == Road.RoadType.HORIZONTAL) {
       if (car.speedX > 0) {
-        car.outFrom = 2;
+        car.movmentDirection = Car.MovmentDirection.RIGHT;
       }
       else if (car.speedX < 0) {
-        car.outFrom = 4;
+        car.movmentDirection = Car.MovmentDirection.LEFT;
       }
     }
-    else if (this.dir == 2) {
+    else if (this.roadType == Road.RoadType.VERTICAL) {
       if (car.speedY > 0) {
-        car.outFrom = 3;
+        car.movmentDirection = Car.MovmentDirection.DOWN;
       }
       else if (car.speedY < 0) {
-        car.outFrom = 1;
+        car.movmentDirection = Car.MovmentDirection.UP;
       }
     }
-    else if (this.dir == 3) {
+    else if (this.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT) {
       //choose side to turn to
       if (car.speedX > 0) {
-        car.outFrom = 2;
+        car.movmentDirection = Car.MovmentDirection.RIGHT;
       }
       else if (car.speedX < 0) {
-        car.outFrom = 4;
+        car.movmentDirection = Car.MovmentDirection.LEFT;
       }
       else if (car.speedY > 0) {
-        car.outFrom = 3;
+        car.movmentDirection = Car.MovmentDirection.DOWN;
       }
       else if (car.speedY < 0) {
-        car.outFrom = 1;
+        car.movmentDirection = Car.MovmentDirection.UP;
       }
     }
   }
@@ -813,7 +817,7 @@ class Road {
       car.hasBeenMoved = true;
 
       //move right
-      if (car.outFrom == 2 && car.x >= size) {
+      if (car.movmentDirection == Car.MovmentDirection.RIGHT && car.x >= size) {
         //move to the next road
         this.cars.splice(i, 1);
 
@@ -825,11 +829,16 @@ class Road {
         let nextRoad = this.getNextRoad(car);
 
         if (nextRoad != undefined) {
+
+          // if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+          //   if(nextRoad.isTrafficLightGreen(car)) nextRoad.addCar(car);
+          // }
+          // else nextRoad.addCar(car);
           nextRoad.addCar(car);
         }
       }
       //move left
-      else if (car.outFrom == 4 && car.x + car.width <= borderWidth) {
+      else if (car.movmentDirection == Car.MovmentDirection.LEFT && car.x + car.width <= borderWidth) {
         this.cars.splice(i, 1);
 
         let offset = car.x + car.width;
@@ -844,7 +853,7 @@ class Road {
         }
       }
       //move down
-      else if (car.outFrom == 3 && car.y >= size) {
+      else if (car.movmentDirection == Car.MovmentDirection.DOWN && car.y >= size) {
         this.cars.splice(i, 1);
 
         let offset = car.y - size;
@@ -859,7 +868,7 @@ class Road {
         }
       }
       //move up
-      else if (car.outFrom == 1 && car.y + car.height <= borderWidth) {
+      else if (car.movmentDirection == Car.MovmentDirection.UP && car.y + car.height <= borderWidth) {
         this.cars.splice(i, 1);
 
         let offset = car.y + car.height;
@@ -877,53 +886,53 @@ class Road {
   }
 
   getNextRoad(car) {
-    if (car.outFrom == 2) {
+    if (car.movmentDirection == Car.MovmentDirection.RIGHT) {
       if (this.column + 1 < gridWidth && grid[this.row][this.column + 1] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row][this.column + 1].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row][this.column + 1].roadType)) {
         return grid[this.row][this.column + 1];
       }
 
       if (this.column + 1 == gridWidth && grid[this.row][0] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row][0].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row][0].roadType)) {
         return grid[this.row][0];
       }
     }
-    else if (car.outFrom == 4) {
+    else if (car.movmentDirection == Car.MovmentDirection.LEFT) {
       if (this.column - 1 > -1 && grid[this.row][this.column - 1] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row][this.column - 1].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row][this.column - 1].roadType)) {
         return grid[this.row][this.column - 1];
       }
 
       if (this.column - 1 == -1 && grid[this.row][gridWidth - 1] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row][gridWidth - 1].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row][gridWidth - 1].roadType)) {
         return grid[this.row][gridWidth - 1];
       }
     }
-    else if (car.outFrom == 3) {
+    else if (car.movmentDirection == Car.MovmentDirection.DOWN) {
       if (this.row + 1 < gridHeight && grid[this.row + 1][this.column] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row + 1][this.column].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row + 1][this.column].roadType)) {
         return grid[this.row + 1][this.column];
       }
 
       if (this.row + 1 == gridHeight && grid[0][this.column] &&
-        this.acceptedNextRoadsDir.includes(grid[0][this.column].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[0][this.column].roadType)) {
         return grid[0][this.column];
       }
     }
-    else if (car.outFrom == 1) {
+    else if (car.movmentDirection == Car.MovmentDirection.UP) {
       if (this.row - 1 > -1 && grid[this.row - 1][this.column] &&
-        this.acceptedNextRoadsDir.includes(grid[this.row - 1][this.column].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[this.row - 1][this.column].roadType)) {
         return grid[this.row - 1][this.column];
       }
       if (this.row - 1 == -1 && grid[gridHeight - 1][this.column] &&
-        this.acceptedNextRoadsDir.includes(grid[gridHeight - 1][this.column].dir)) {
+        this.acceptedNextRoadsTypes.includes(grid[gridHeight - 1][this.column].roadType)) {
         return grid[gridHeight - 1][this.column];
       }
     }
   }
 
 
-  hasNoCars(){
+  hasNoCars() {
     return this.cars.length == 0;
   }
 
@@ -942,17 +951,17 @@ class Road {
 
     drawer.drawSquare(startX, startY, width, height, "black");
 
-    if (this.dir == 1) {
+    if (this.roadType == Road.RoadType.HORIZONTAL) {
       for (let i = lineInMiddleHeight; i < width - lineInMiddleHeight; i += (lineInMiddleHeight * 2)) {
         drawer.drawSquare(startX + i, startY + (height / 2) - (lineInMiddleWidth / 2), lineInMiddleHeight, lineInMiddleWidth, "white");
       }
     }
-    else if (this.dir == 2) {
+    else if (this.roadType == Road.RoadType.VERTICAL) {
       for (let i = lineInMiddleHeight; i < width - lineInMiddleHeight; i += (lineInMiddleHeight * 2)) {
         drawer.drawSquare(startX + (width / 2) - (lineInMiddleWidth / 2), startY + i, lineInMiddleWidth, lineInMiddleHeight, "white");
       }
     }
-    else if (this.dir == 3) {
+    else if (this.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT) {
       drawer.drawCircle(startX + (width / 2), startY + (height / 2), lineInMiddleWidth, "white");
     }
   }
@@ -967,6 +976,15 @@ class Road {
     }
   }
 }
+
+class JunctionWithTrafficLights extends Road{
+
+
+  isTrafficLightGreen(car){
+
+  }
+}
+
 
 class User {
   constructor() {
