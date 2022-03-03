@@ -28,7 +28,7 @@ function game() {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j]) {
         grid[i][j].moveCars();
-        grid[i][j].draw();
+        grid[i][j].makeTurn();
       }
     }
   }
@@ -255,13 +255,13 @@ class Drawer {
         );
       else {
         if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].setRoadType(2);
+          grid[rowOfMouse][columnOfMouse] .setRoadType(Road.RoadType.VERTICAL);
         }
         else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].setRoadType(3);
+          grid[rowOfMouse][columnOfMouse] = new JunctionWithTrafficLights(rowOfMouse, columnOfMouse, Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT);
         }
         else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
-          grid[rowOfMouse][columnOfMouse].setRoadType(1);
+          grid[rowOfMouse][columnOfMouse] = new Road(rowOfMouse, columnOfMouse, Road.RoadType.HORIZONTAL);
         }
       }
     }
@@ -717,6 +717,44 @@ class Car {
         this.color
       );
     }
+    else{
+      if(this.movmentDirection == Car.MovmentDirection.RIGHT){
+          drawer.drawSquare(
+          startX + this.x,
+          startY + this.y - (size / 6) - this.height,
+          this.width,
+          this.height,
+          this.color
+        );
+      }
+      else if(this.movmentDirection == Car.MovmentDirection.LEFT){
+        drawer.drawSquare(
+          startX + this.x,
+          startY + this.y + (size / 6) + borderWidth,
+          this.width,
+          this.height,
+          this.color
+        );
+      }
+      else if(this.movmentDirection == Car.MovmentDirection.DOWN){
+        drawer.drawSquare(
+          startX + this.x + (size / 6) + borderWidth,
+          startY + this.y,
+          this.height,
+          this.width,
+          this.color
+        );
+      }
+      else if(this.movmentDirection == Car.MovmentDirection.UP){
+        drawer.drawSquare(
+          ((startX + this.x) - (size / 6)) - this.height,
+          startY + this.y,
+          this.height,
+          this.width,
+          this.color
+        );
+      }
+    }
   }
 }
 
@@ -732,16 +770,13 @@ class Road {
     this.row = row;
     this.column = column;
     this.cars = [];
-    this.setRoadType(roadType);
+    if(roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT) this.acceptedNextRoadsTypes = [Road.RoadType.HORIZONTAL, Road.RoadType.VERTICAL, roadType];
+    else this.setRoadType(roadType);
   }
 
   setRoadType(roadType) {
     this.roadType = roadType;
-
-    if (this.roadType == Road.RoadType.HORIZONTAL || this.roadType == Road.RoadType.VERTICAL)
-      this.acceptedNextRoadsTypes = [this.roadType, Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT];
-    else if (this.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT)
-      this.acceptedNextRoadsTypes = [Road.RoadType.HORIZONTAL, Road.RoadType.VERTICAL, this.roadType];
+    this.acceptedNextRoadsTypes = [this.roadType, Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT];
   }
 
   addCar(car) {
@@ -817,10 +852,7 @@ class Road {
       car.hasBeenMoved = true;
 
       //move right
-      if (car.movmentDirection == Car.MovmentDirection.RIGHT && car.x >= size) {
-        //move to the next road
-        this.cars.splice(i, 1);
-
+      if (car.movmentDirection == Car.MovmentDirection.RIGHT && car.x + car.width >= size) {
         let offset = car.x - size;
 
         car.x = offset;
@@ -830,31 +862,59 @@ class Road {
 
         if (nextRoad != undefined) {
 
-          // if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
-          //   if(nextRoad.isTrafficLightGreen(car)) nextRoad.addCar(car);
-          // }
-          // else nextRoad.addCar(car);
-          nextRoad.addCar(car);
+          if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            if(nextRoad.isTrafficLightGreen(car)){
+              //console.log("Traffic light is GREEN!")
+              //remove car from current road
+              this.cars.splice(i, 1);
+              nextRoad.addCar(car);
+            }
+            else {
+              //console.log("Traffic light is RED!")
+              car.speedX = 0;
+              car.x = size - car.width;
+              car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
+            }
+          }
+          else{
+            //remove car from current road
+            this.cars.splice(i, 1);
+            nextRoad.addCar(car);
+          }
         }
       }
       //move left
-      else if (car.movmentDirection == Car.MovmentDirection.LEFT && car.x + car.width <= borderWidth) {
-        this.cars.splice(i, 1);
-
-        let offset = car.x + car.width;
-
-        car.x = (size - car.width) + offset;
+      else if (car.movmentDirection == Car.MovmentDirection.LEFT && car.x <= borderWidth) {
+        car.x = size + car.x;
         car.y = 0;
 
         let nextRoad = this.getNextRoad(car);
 
         if (nextRoad != undefined) {
-          nextRoad.addCar(car);
+
+          if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            if(nextRoad.isTrafficLightGreen(car)){
+              //console.log("Traffic light is GREEN!")
+              //remove car from current road
+              this.cars.splice(i, 1);
+              nextRoad.addCar(car);
+            }
+            else {
+              //console.log("Traffic light is RED!")
+              car.speedX = 0;
+              car.x = 0;
+              car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
+            }
+          }
+          else{
+            //remove car from current road
+            this.cars.splice(i, 1);
+            nextRoad.addCar(car);
+          }
         }
       }
       //move down
-      else if (car.movmentDirection == Car.MovmentDirection.DOWN && car.y >= size) {
-        this.cars.splice(i, 1);
+      else if (car.movmentDirection == Car.MovmentDirection.DOWN && car.y + car.width >= size) {
 
         let offset = car.y - size;
 
@@ -864,22 +924,55 @@ class Road {
         let nextRoad = this.getNextRoad(car);
 
         if (nextRoad != undefined) {
-          nextRoad.addCar(car);
+          if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            if(nextRoad.isTrafficLightGreen(car)){
+              //console.log("Traffic light is GREEN!")
+              //remove car from current road
+              this.cars.splice(i, 1);
+              nextRoad.addCar(car);
+            }
+            else {
+              //console.log("Traffic light is RED!")
+              car.speedY = 0;
+              car.y = size - car.width;
+              car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
+            }
+          }
+          else{
+            //remove car from current road
+            this.cars.splice(i, 1);
+            nextRoad.addCar(car);
+          }
         }
       }
       //move up
-      else if (car.movmentDirection == Car.MovmentDirection.UP && car.y + car.height <= borderWidth) {
-        this.cars.splice(i, 1);
-
-        let offset = car.y + car.height;
+      else if (car.movmentDirection == Car.MovmentDirection.UP && car.y <= borderWidth) {
 
         car.x = size;
-        car.y = (size - car.height) + offset;
+        car.y = size + car.y;
 
         let nextRoad = this.getNextRoad(car);
 
         if (nextRoad != undefined) {
-          nextRoad.addCar(car);
+          if(nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            if(nextRoad.isTrafficLightGreen(car)){
+              //console.log("Traffic light is GREEN!")
+              //remove car from current road
+              this.cars.splice(i, 1);
+              nextRoad.addCar(car);
+            }
+            else {
+              //console.log("Traffic light is RED!")
+              car.speedY = 0;
+              car.y = 0;
+              car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
+            }
+          }
+          else{
+            //remove car from current road
+            this.cars.splice(i, 1);
+            nextRoad.addCar(car);
+          }
         }
       }
     }
@@ -936,6 +1029,9 @@ class Road {
     return this.cars.length == 0;
   }
 
+  makeTurn(){
+    this.draw();
+  }
 
   draw() {
     let startX = this.column * size + borderWidth;
@@ -977,11 +1073,92 @@ class Road {
   }
 }
 
-class JunctionWithTrafficLights extends Road{
+class TurningRoad extends Road {
 
+}
 
-  isTrafficLightGreen(car){
+class JunctionWithTrafficLights extends Road {
 
+  constructor(row, column, roadType){
+    super(row, column, roadType);
+    this.roadType = roadType;
+
+    this.CHANGE_LIGHT_EVERY_X_TURNS = 70;
+    this.RED_FOR_ALL_FOR_X_TURNS = 45;
+    this.countToChangeLight = 0;
+    this.countToStayRedLight = -1;
+
+    this.connectedRoads = [undefined, undefined, undefined, undefined];
+    this.greenLightForSide = -1;
+
+    this.updateConnectedRoads();
+  }
+
+  updateConnectedRoads(){
+
+    this.connectedRoads = [undefined, undefined, undefined, undefined];
+
+    //check if there is road to the top
+    if(this.row - 1 > -1 && grid[this.row - 1][this.column] != undefined) this.connectedRoads[0] = grid[this.row - 1][this.column];
+    //check if there is road to the left
+    if(this.column - 1 > -1 && grid[this.row][this.column - 1] != undefined) this.connectedRoads[1] = grid[this.row][this.column - 1];
+    //check if there is road to the bottom
+    if(this.row + 1 < gridHeight && grid[this.row + 1][this.column] != undefined) this.connectedRoads[2] = grid[this.row + 1][this.column];
+    //check if there is road to the right
+    if(this.column + 1 < gridWidth && grid[this.row][this.column + 1] != undefined) this.connectedRoads[3] = grid[this.row][this.column + 1];
+    
+    this.greenLightForSide = -1;
+    this.changeGreenLightSide()
+  }
+
+  makeTurn(){
+
+    // console.log("this.countToStayRedLight: " + this.countToStayRedLight)
+    // console.log("this.countToChangeLight: " + this.countToChangeLight)
+    // console.log("this.greenLightForSide: " + this.greenLightForSide)
+    //check if there is red light for all
+    if(this.countToStayRedLight != -1){
+
+      //check if red light for all needs to be over
+      if(this.countToStayRedLight == this.RED_FOR_ALL_FOR_X_TURNS){
+        //turn off red light for all
+        this.countToStayRedLight = -1;
+        return;
+      }
+
+      this.countToStayRedLight++;
+      return;
+    }
+
+    //check if need to change green light side
+    if(this.countToChangeLight == this.CHANGE_LIGHT_EVERY_X_TURNS){
+      this.countToChangeLight = 0;
+      this.changeGreenLightSide();
+    }
+    else this.countToChangeLight++;
+
+    
+
+    super.draw();
+  }
+
+  changeGreenLightSide(){
+    let i = (this.greenLightForSide + 1) % 4;
+    let mone = 0;
+    
+    while(mone < 4){
+      if(this.connectedRoads[i] != undefined){
+        this.greenLightForSide = i;
+        break;
+      }
+
+      mone++;
+      i = (i + 1) % 4
+    }
+  }
+
+  isTrafficLightGreen(car) {
+    return car.movmentDirection == this.greenLightForSide;
   }
 }
 
