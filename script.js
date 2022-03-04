@@ -58,12 +58,12 @@ function setNavButtonsClick() {
         user.road = true;
         user.clear = false;
         user.car = false;
-        nav_button_car.style.backgroundColor = "#EFEFEF";
-        nav_button_clear.style.backgroundColor = "#EFEFEF";
-        this.style.backgroundColor = "rgb(65,228,65)";
+        nav_button_car.classList.remove("active");
+        nav_button_clear.classList.remove("active");
+        this.classList.add("active");
       } else {
         user.road = false;
-        this.style.backgroundColor = "#EFEFEF";
+        this.classList.remove("active");
       }
     },
     false
@@ -76,12 +76,12 @@ function setNavButtonsClick() {
         user.road = false;
         user.clear = false;
         user.car = true;
-        nav_button_road.style.backgroundColor = "#EFEFEF";
-        nav_button_clear.style.backgroundColor = "#EFEFEF";
-        this.style.backgroundColor = "rgb(65,228,65)";
+        nav_button_road.classList.remove("active");
+        nav_button_clear.classList.remove("active");
+        this.classList.add("active");
       } else {
         user.car = false;
-        this.style.backgroundColor = "#EFEFEF";
+        this.classList.remove("active");
       }
     },
     false
@@ -94,12 +94,12 @@ function setNavButtonsClick() {
         user.road = false;
         user.clear = true;
         user.car = false;
-        nav_button_road.style.backgroundColor = "#EFEFEF";
-        nav_button_car.style.backgroundColor = "#EFEFEF";
-        this.style.backgroundColor = "rgb(65,228,65)";
+        nav_button_road.classList.remove("active");
+        nav_button_car.classList.remove("active");
+        this.classList.add("active");
       } else {
         user.clear = false;
-        this.style.backgroundColor = "#EFEFEF";
+        this.classList.remove("active");
       }
     },
     false
