@@ -27,8 +27,16 @@ function game() {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j]) {
-        grid[i][j].moveCars();
+        grid[i][j].calcNextPositionForCars();
         grid[i][j].makeTurn();
+      }
+    }
+  }
+
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      if (grid[i][j]) {
+        grid[i][j].moveCars();
       }
     }
   }
@@ -336,21 +344,28 @@ class Car {
     if (speedX > 0) {
       this.x = borderWidth;
       this.y = size;
-    } else if (speedX < 0) {
+    }
+    else if (speedX < 0) {
       this.x = size - this.width;
       this.y = 0;
-    } else if (speedY > 0) {
+    }
+    else if (speedY > 0) {
       this.x = 0;
       this.y = borderWidth;
-    } else if (speedY < 0) {
+    }
+    else if (speedY < 0) {
       this.x = size;
       this.y = size - this.height;
     }
+
     this.speedX = speedX;
     this.speedY = speedY;
     this.forceX = forceX;
     this.forceY = forceY;
     this.color = color;
+
+    this.nextX = 0;
+    this.nextY = 0;
   }
 
 
@@ -815,11 +830,9 @@ class Road {
     }
   }
 
-  moveCars() {
+  calcNextPositionForCars() {
     for (let i = this.cars.length - 1; i > -1; i--) {
       let car = this.cars[i];
-      //if the cars has been moved already in this turn then don't move
-      if (car.hasBeenMoved) continue;
 
       //if car can't move
       let maxDistCarCanMove = car.canMove(this);
@@ -846,8 +859,19 @@ class Road {
         else car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING--;
       }
 
-      car.x += maxDistCarCanMove.addX;
-      car.y += maxDistCarCanMove.addY;
+      car.nextX = car.x + maxDistCarCanMove.addX;
+      car.nextY = car.y + maxDistCarCanMove.addY;
+    }
+  }
+
+  moveCars(){
+    for (let i = this.cars.length - 1; i > -1; i--) {
+      let car = this.cars[i];
+      //if the cars has been moved already in this turn then don't move
+      if (car.hasBeenMoved) continue;
+
+      car.x = car.nextX;
+      car.y = car.nextY;
 
       car.hasBeenMoved = true;
 
