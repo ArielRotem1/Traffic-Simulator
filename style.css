@@ -5,15 +5,16 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
 #nav {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	display:flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 5px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
 }
 
 #title {
@@ -24,11 +25,11 @@ body {
 	width: 60px;
 	height: 35px;
 	color: DarkSlateBlue;
-    border-radius: 5px;
-    border: none;
-    box-shadow: 0 0 5px 1px grey;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 5px 1px grey;
 	font-weight: bold;
-    transition: ease all 0.125s;
+  transition: ease all 0.125s;
 }
 .nav_buttons.active {
 	background: rgb(118, 245, 161);
@@ -38,7 +39,7 @@ canvas {
 	margin-left: auto;
 	margin-right: auto;
 	border: 1px solid #000000;
-    border-radius: 5px;
-    // make canvas more responsive
-    max-width: 95vw;
+  border-radius: 5px;
+  /* make canvas more responsive */
+  max-width: 95vw;
 }
