@@ -129,10 +129,6 @@ class Drawer {
     this.canvasWidth = this.canvas.width;
     this.canvasHeight = this.canvas.height;
 
-    let rect = this.canvas.getBoundingClientRect();
-    this.xoffset = rect.left;
-    this.yoffset = rect.top;
-
     size = sizeOfSquareRatio;
     borderWidth = lineWidth;
 
@@ -145,6 +141,10 @@ class Drawer {
     gridWidth = grid[0].length;
     gridHeight = grid.length;
 
+    this.addEventListenersToAllowUserToUseCanvas();
+  }
+
+  addEventListenersToAllowUserToUseCanvas(){
     this.canvas.addEventListener(
       "mousedown",
       function (evt) {
@@ -241,6 +241,11 @@ class Drawer {
   }
 
   canvasHasBeenClicked(mousePos) {
+    //update the start location of the canvas if the window has been changed
+    let rect = this.canvas.getBoundingClientRect();
+    this.xoffset = rect.left;
+    this.yoffset = rect.top;
+
     var rowOfMouse = Math.floor((mousePos.y - this.yoffset) / size);
     var columnOfMouse = Math.floor((mousePos.x - this.xoffset) / size);
 

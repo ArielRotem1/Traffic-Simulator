@@ -4,32 +4,36 @@
 body {
 	margin: 0;
 	padding: 0;
+
 }
 
 #nav {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
 	display:flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 5px;
+  gap: 1vmin;
+  padding: 1vmin;
 }
 
 #title {
-  color: Crimson;
+  color: "Crimson";
 }
 
 .nav_buttons {
-	width: 60px;
-	height: 35px;
+	width: 12vmin;
+  min-width: 50px;
+	height: 4vmin;
+  min-height: 25px;
 	color: DarkSlateBlue;
-  border-radius: 5px;
+  border-radius: 2vmin;
   border: none;
-  box-shadow: 0 0 5px 1px grey;
+  box-shadow: 0 0 2vmin 0.5vmin grey;
 	font-weight: bold;
   transition: ease all 0.125s;
+  font-size: calc(4px + 2vmin);
 }
 .nav_buttons.active {
 	background: rgb(118, 245, 161);
@@ -38,8 +42,8 @@ canvas {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	border: 1px solid #000000;
-  border-radius: 5px;
+	border: 0.1vmin solid #000000;
+  border-radius: 0.5vmin;
   /* make canvas more responsive */
   max-width: 95vw;
 }
