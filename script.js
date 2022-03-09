@@ -3,9 +3,6 @@ var grid, gridWidth, gridHeight;
 var drawer = undefined;
 
 window.onload = () => {
-  document.body.style.backgroundColor = "AliceBlue";
-  document.getElementById("nav").style.backgroundColor = "Bisque";
-
   drawer = new Drawer();
 
   drawer.setup("canvas", 50, 0);

@@ -4,7 +4,7 @@
 body {
 	margin: 0;
 	padding: 0;
-
+  background-color: AliceBlue;
 }
 
 #nav {
@@ -16,10 +16,11 @@ body {
   align-items: center;
   gap: 1vmin;
   padding: 1vmin;
+  background-color: Bisque;
 }
 
 #title {
-  color: "Crimson";
+  color: Crimson;
 }
 
 .nav_buttons {
