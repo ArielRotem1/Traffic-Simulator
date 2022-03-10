@@ -1,40 +1,41 @@
 * {
     font-family: "Shippori Antique B1", sans-serif;
 }
+
 body {
 	margin: 0;
-	padding: 0;
-  background-color: AliceBlue;
+    padding: 0;
+    background-color: AliceBlue;
 }
 
 #nav {
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
 	display:flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 1vmin;
-  padding: 1vmin;
-  background-color: Bisque;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1vmin;
+    padding: 1vmin;
+    background-color: Bisque;
 }
 
 #title {
-  color: Crimson;
+    color: Crimson;
 }
 
 .nav_buttons {
 	width: 12vmin;
-  min-width: 50px;
+    min-width: 50px;
 	height: 4vmin;
-  min-height: 25px;
+    min-height: 25px;
 	color: DarkSlateBlue;
-  border-radius: 2vmin;
-  border: none;
-  box-shadow: 0 0 2vmin 0.5vmin grey;
+    border-radius: 2vmin;
+    border: none;
+    box-shadow: 0 0 2vmin 0.5vmin grey;
 	font-weight: bold;
-  transition: ease all 0.125s;
-  font-size: calc(4px + 2vmin);
+    transition: ease all 0.125s;
+    font-size: calc(4px + 2vmin);
 }
 .nav_buttons.active {
 	background: rgb(118, 245, 161);
@@ -44,7 +45,7 @@ canvas {
 	margin-left: auto;
 	margin-right: auto;
 	border: 0.1vmin solid #000000;
-  border-radius: 0.5vmin;
-  /* make canvas more responsive */
-  max-width: 95vw;
+    border-radius: 0.5vmin;
+    /* make canvas more responsive */
+    max-width: 95vw;
 }
