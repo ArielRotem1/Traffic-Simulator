@@ -1,0 +1,3 @@
+class TurningRoad extends Road {
+
+}
