@@ -1,7 +1,6 @@
 # Traffic-Simulator
 
-The Simulator is not ready yet but you can see what we made until now in the following link:
-<br>Traffic Simulator - https://protective-dog-banjo.glitch.me/
+The Simulator is not ready yet but you can see what we made until now in the following link: [Traffic Simulator](https://protective-dog-banjo.glitch.me/)
 <br><br>
 **Contribution**
 1) Look at the opened issues and select one to work on. You can also offer a feature or report a bug you have found.
