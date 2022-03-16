@@ -1,5 +1,7 @@
 class JunctionWithTrafficLights extends Road {
 
+    static convertorCarMovmentToLightForSide = [2, 3, 0, 1]
+
     constructor(row, column, roadType) {
         super(row, column, roadType);
         this.roadType = roadType;
@@ -79,7 +81,7 @@ class JunctionWithTrafficLights extends Road {
     }
 
     isTrafficLightGreen(car) {
-        return car.movmentDirection == this.greenLightForSide;
+        return JunctionWithTrafficLights.convertorCarMovmentToLightForSide[car.movmentDirection] == this.greenLightForSide;
     }
 
     draw() {
@@ -109,10 +111,10 @@ class JunctionWithTrafficLights extends Road {
                 }
                 
                 switch (i) {
-                    case 0: drawer.drawSquare(startX, startY + height - lightLineWidth, width, lightLineWidth, lightColor); break;
-                    case 1: drawer.drawSquare(startX + width - lightLineWidth, startY, lightLineWidth, height, lightColor); break;
-                    case 2: drawer.drawSquare(startX, startY, width, lightLineWidth, lightColor); break;
-                    case 3: drawer.drawSquare(startX, startY, lightLineWidth, height, lightColor); break;
+                    case 0: drawer.drawSquare(startX, startY, width, lightLineWidth, lightColor); break;
+                    case 1: drawer.drawSquare(startX, startY, lightLineWidth, height, lightColor); break;
+                    case 2: drawer.drawSquare(startX, startY + height - lightLineWidth, width, lightLineWidth, lightColor); break;
+                    case 3: drawer.drawSquare(startX + width - lightLineWidth, startY, lightLineWidth, height, lightColor); break;
                 }
             }
         }
