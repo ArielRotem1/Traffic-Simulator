@@ -59,15 +59,17 @@ function setNavButtonsClick() {
     nav_button_road.addEventListener(
         "click",
         function (evt) {
-            if (!user.road) {
-                user.road = true;
-                user.clear = false;
-                user.car = false;
+            if (!user.isAddingRoad) {
+                user.isAddingRoad = true;
+                user.isClearing = false;
+                user.isAddingCar = false;
+
                 nav_button_car.classList.remove("active");
                 nav_button_clear.classList.remove("active");
                 this.classList.add("active");
             } else {
-                user.road = false;
+                user.isAddingRoad = false;
+
                 this.classList.remove("active");
             }
         },
@@ -77,15 +79,17 @@ function setNavButtonsClick() {
     nav_button_car.addEventListener(
         "click",
         function (evt) {
-            if (!user.car) {
-                user.road = false;
-                user.clear = false;
-                user.car = true;
+            if (!user.isAddingCar) {
+                user.isAddingRoad = false;
+                user.isClearing = false;
+                user.isAddingCar = true;
+
                 nav_button_road.classList.remove("active");
                 nav_button_clear.classList.remove("active");
                 this.classList.add("active");
             } else {
-                user.car = false;
+                user.isAddingCar = false;
+
                 this.classList.remove("active");
             }
         },
@@ -95,15 +99,17 @@ function setNavButtonsClick() {
     nav_button_clear.addEventListener(
         "click",
         function (evt) {
-            if (!user.clear) {
-                user.road = false;
-                user.clear = true;
-                user.car = false;
+            if (!user.isClearing) {
+                user.isAddingRoad = false;
+                user.isClearing = true;
+                user.isAddingCar = false;
+
                 nav_button_road.classList.remove("active");
                 nav_button_car.classList.remove("active");
                 this.classList.add("active");
             } else {
-                user.clear = false;
+                user.isClearing = false;
+                
                 this.classList.remove("active");
             }
         },

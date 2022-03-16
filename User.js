@@ -1,7 +1,7 @@
 class User {
     constructor() {
-        this.clear = false;
-        this.road = false;
-        this.car = false;
+        this.isClearing = false;
+        this.isAddingRoad = false;
+        this.isAddingCar = false;
     }
 }
