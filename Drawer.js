@@ -141,7 +141,7 @@ class Drawer {
         this.mouseDownTileY = rowOfMouse;
 
         //add road
-        if (user.road) {
+        if (user.isAddingRoad) {
             if (!grid[rowOfMouse][columnOfMouse])
                 grid[rowOfMouse][columnOfMouse] = new Road(
                     rowOfMouse,
@@ -161,7 +161,7 @@ class Drawer {
             }
         }
         //clear road and cars in this road
-        else if (user.clear) {
+        else if (user.isClearing) {
             grid[rowOfMouse][columnOfMouse] = undefined;
             let color = "AliceBlue";
 
@@ -175,13 +175,9 @@ class Drawer {
             this.drawSquare(startSquareX, startSquareY, width, height, color);
         }
         //add car
-        else if (user.car) {
-            if (!grid[rowOfMouse][columnOfMouse])
-                grid[rowOfMouse][columnOfMouse] = new Road(
-                    rowOfMouse,
-                    columnOfMouse,
-                    1
-                );
+        else if (user.isAddingCar) {
+            //if there is no road where the user wants to add the car to then don't add it
+            if (!grid[rowOfMouse][columnOfMouse]) return;
 
             let speed = 0.01//(size / 18) + (size / (Math.floor(Math.random() * 30) + 30));
             let rnd = Math.random();
