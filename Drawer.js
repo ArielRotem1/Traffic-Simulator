@@ -27,57 +27,33 @@ class Drawer {
     }
 
     addEventListenersToAllowUserToUseCanvas() {
-        this.canvas.addEventListener(
-            "mousedown",
-            function (evt) {
-                drawer.isMouseDown = true;
-                drawer.mouseDownTileX = -1;
-                drawer.mouseDownTileY = -1;
+        this.canvas.addEventListener("mousedown", (event) => {
+            drawer.isMouseDown = true;
+            drawer.mouseDownTileX = -1;
+            drawer.mouseDownTileY = -1;
 
-                let mousePos = {
-                    x: evt.clientX,
-                    y: evt.clientY,
-                };
+            let mousePos = { x: event.clientX, y: event.clientY };
+            drawer.canvasHasBeenClicked(mousePos);
+        }, false);
 
-                drawer.canvasHasBeenClicked(mousePos);
-            },
-            false
-        );
+        this.canvas.addEventListener("mouseup", (event) => {
+            drawer.isMouseDown = false;
+            drawer.mouseDownTileX = -1;
+            drawer.mouseDownTileY = -1;
+        }, false);
 
-        this.canvas.addEventListener(
-            "mouseup",
-            function (evt) {
-                drawer.isMouseDown = false;
-                drawer.mouseDownTileX = -1;
-                drawer.mouseDownTileY = -1;
-            },
-            false
-        );
+        this.canvas.addEventListener("mouseout", (event) => {
+            drawer.isMouseDown = false;
+            drawer.mouseDownTileX = -1;
+            drawer.mouseDownTileY = -1;
+        }, false);
 
-        this.canvas.addEventListener(
-            "mouseout",
-            function (evt) {
-                drawer.isMouseDown = false;
-                drawer.mouseDownTileX = -1;
-                drawer.mouseDownTileY = -1;
-            },
-            false
-        );
+        this.canvas.addEventListener("mousemove", (event) => {
+            if (!drawer.isMouseDown) return;
 
-        this.canvas.addEventListener(
-            "mousemove",
-            function (evt) {
-                if (drawer.isMouseDown) {
-                    let mousePos = {
-                        x: evt.clientX,
-                        y: evt.clientY,
-                    };
-
-                    drawer.canvasHasBeenClicked(mousePos);
-                }
-            },
-            false
-        );
+            let mousePos = { x: event.clientX, y: event.clientY };
+            drawer.canvasHasBeenClicked(mousePos);
+        }, false);
     }
 
     drawGrid() {
@@ -89,22 +65,12 @@ class Drawer {
         for (let i = 0; i < this.canvasWidth; i += size) {
             this.ctx.fillRect(i, 0, borderWidth, this.canvasHeight);
         }
-        this.ctx.fillRect(
-            this.canvasWidth - borderWidth,
-            0,
-            borderWidth,
-            this.canvasHeight
-        );
+        this.ctx.fillRect(this.canvasWidth - borderWidth, 0, borderWidth, this.canvasHeight);
 
         for (let i = 0; i < this.canvasHeight; i += size) {
             this.ctx.fillRect(0, i, this.canvasWidth, borderWidth);
         }
-        this.ctx.fillRect(
-            0,
-            this.canvasHeight - borderWidth,
-            this.canvasWidth,
-            borderWidth
-        );
+        this.ctx.fillRect(0, this.canvasHeight - borderWidth, this.canvasWidth, borderWidth);
 
         this.ctx.stroke();
         this.ctx.closePath();
@@ -128,14 +94,10 @@ class Drawer {
         this.xoffset = rect.left;
         this.yoffset = rect.top;
 
-        var rowOfMouse = Math.floor((mousePos.y - this.yoffset) / size);
-        var columnOfMouse = Math.floor((mousePos.x - this.xoffset) / size);
+        let rowOfMouse = Math.floor((mousePos.y - this.yoffset) / size);
+        let columnOfMouse = Math.floor((mousePos.x - this.xoffset) / size);
 
-        if (
-            this.mouseDownTileX == columnOfMouse &&
-            this.mouseDownTileY == rowOfMouse
-        )
-            return; //already were here
+        if (this.mouseDownTileX == columnOfMouse && this.mouseDownTileY == rowOfMouse) return; //already were here
 
         this.mouseDownTileX = columnOfMouse;
         this.mouseDownTileY = rowOfMouse;
@@ -143,11 +105,7 @@ class Drawer {
         //add road
         if (user.isAddingRoad) {
             if (!grid[rowOfMouse][columnOfMouse])
-                grid[rowOfMouse][columnOfMouse] = new Road(
-                    rowOfMouse,
-                    columnOfMouse,
-                    1
-                );
+                grid[rowOfMouse][columnOfMouse] = new Road(rowOfMouse, columnOfMouse, 1);
             else {
                 if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
                     grid[rowOfMouse][columnOfMouse].setRoadType(Road.RoadType.VERTICAL);
@@ -179,23 +137,21 @@ class Drawer {
             //if there is no road where the user wants to add the car to then don't add it
             if (!grid[rowOfMouse][columnOfMouse]) return;
 
-            let speed = 0.01//(size / 18) + (size / (Math.floor(Math.random() * 30) + 30));
-            let rnd = Math.random();
-            if (rnd < 0.5) speed *= -1;
+            
 
-            if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL) {
+            let speed = 0.01//(size / 18) + (size / (Math.floor(Math.random() * 30) + 30));
+            
+            //check which side of the road the user click to know where the car should be moving on the roadType
+            // - in HORIZONTAL road car can move left or right and in VERTICAL road car can move up or down
+
+            //can add car only to HORIZONTAL or VERTICAL road
+            if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL){
+                speed *= ((mousePos.y - this.yoffset) / size) - rowOfMouse >= 0.5 ? 1 : -1;
                 grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
             }
-            else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL) {
+            else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL){
+                speed *= ((mousePos.x - this.xoffset) / size) - columnOfMouse <= 0.5 ? 1 : -1;
                 grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
-            }
-            else {
-                if (Math.random() < 0.5) {
-                    grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
-                }
-                else {
-                    grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
-                }
             }
         }
     }
