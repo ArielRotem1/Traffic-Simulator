@@ -131,6 +131,8 @@ class Road {
                         nextRoad.addCar(car);
                     }
                 }
+                //car has no next road to go to so the car disappears
+                else this.cars.splice(i, 1);
             }
             //move left
             else if (car.movmentDirection == Car.MovmentDirection.LEFT && car.x <= borderWidth) {
@@ -161,6 +163,8 @@ class Road {
                         nextRoad.addCar(car);
                     }
                 }
+                //car has no next road to go to so the car disappears
+                else this.cars.splice(i, 1);
             }
             //move down
             else if (car.movmentDirection == Car.MovmentDirection.DOWN && car.y + car.width >= size) {
@@ -193,6 +197,8 @@ class Road {
                         nextRoad.addCar(car);
                     }
                 }
+                //car has no next road to go to so the car disappears
+                else this.cars.splice(i, 1);
             }
             //move up
             else if (car.movmentDirection == Car.MovmentDirection.UP && car.y <= borderWidth) {
@@ -223,6 +229,8 @@ class Road {
                         nextRoad.addCar(car);
                     }
                 }
+                //car has no next road to go to so the car disappears
+                else this.cars.splice(i, 1);
             }
         }
     }
