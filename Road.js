@@ -68,6 +68,8 @@ class Road {
                     car.reduceSpeed();
                 }
                 else car.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING--;
+                car.nextX = car.x;
+                car.nextY = car.y;
                 continue;
             }
             else if (maxDistCarCanMove.status == "part speed") {
