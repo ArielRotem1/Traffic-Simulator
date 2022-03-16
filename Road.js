@@ -204,7 +204,7 @@ class Road {
 
                 if (nextRoad != undefined) {
                     if (nextRoad.roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT) {
-                        if (nextRoad.isTrafficLightGreen(car)) {
+                        if (nextRoad.isTrafficLightGreen(car) && nextRoad.hasNoCarsExecptForCarsMoving(Car.MovmentDirection.UP)) {
                             //console.log("Traffic light is GREEN!")
                             //remove car from current road
                             this.cars.splice(i, 1);
@@ -276,6 +276,12 @@ class Road {
 
     hasNoCars() {
         return this.cars.length == 0;
+    }
+
+    hasNoCarsExecptForCarsMoving(carMovmentDirection) {
+        for(let car of this.cars)
+            if(car.movmentDirection != carMovmentDirection) return false;
+        return true;
     }
 
     makeTurn() {
