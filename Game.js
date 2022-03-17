@@ -4,6 +4,25 @@ var drawer = undefined;
 
 class Game{
 
+    static pingNearJunctionsWithTrafficLights(row, column){
+        //up
+        if(row - 1 > -1 && grid[row - 1][column] != undefined && grid[row - 1][column].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            grid[row - 1][column].updateConnectedRoads();
+        }
+        //left
+        if(column - 1 > -1 && grid[row][column - 1] != undefined && grid[row][column - 1].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            grid[row][column - 1].updateConnectedRoads();
+        }
+        //down
+        if(row + 1 < gridHeight && grid[row + 1][column] != undefined && grid[row + 1][column].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            grid[row + 1][column].updateConnectedRoads();
+        }
+        //right
+        if(column + 1 < gridWidth && grid[row][column + 1] != undefined && grid[row][column + 1].roadType == Road.RoadType.JUNCTION_WITH_TRAFFIC_LIGHT){
+            grid[row][column + 1].updateConnectedRoads();
+        }
+    }
+
     constructor(){
 
         window.onload = () => {

@@ -106,8 +106,11 @@ class Drawer {
 
         //add road
         if (user.isAddingRoad) {
-            if (!grid[rowOfMouse][columnOfMouse])
+            if (!grid[rowOfMouse][columnOfMouse]){
                 grid[rowOfMouse][columnOfMouse] = new Road(rowOfMouse, columnOfMouse, 1);
+                //pingNearJunctionsWithTrafficLights so they will include the road in the traffic lights
+                Game.pingNearJunctionsWithTrafficLights(rowOfMouse, columnOfMouse);
+            }
             else {
                 if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL && grid[rowOfMouse][columnOfMouse].hasNoCars()) {
                     grid[rowOfMouse][columnOfMouse].setRoadType(Road.RoadType.VERTICAL);
@@ -122,7 +125,13 @@ class Drawer {
         }
         //clear road and cars in this road
         else if (user.isClearing) {
+            //check if there is road there at all if not then return
+            if(grid[rowOfMouse][columnOfMouse] == undefined) return;
+
             grid[rowOfMouse][columnOfMouse] = undefined;
+            //pingNearJunctionsWithTrafficLights so they will exclude the road from the traffic lights
+            Game.pingNearJunctionsWithTrafficLights(rowOfMouse, columnOfMouse);
+
             let color = "AliceBlue";
 
             let startSquareX = columnOfMouse * size + borderWidth;
