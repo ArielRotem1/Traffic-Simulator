@@ -25,7 +25,7 @@ class Game{
     }
 
     game(){
-        drawer.drawSquare(0, 0, drawer.canvasWidth, drawer.canvasHeight, "AliceBlue");//clearCanvas();
+        Game.clearCanvas();
         
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
@@ -53,8 +53,8 @@ class Game{
         }
     }
 
-    clearCanvas(){
-        
+    static clearCanvas(){
+        drawer.drawSquare(0, 0, drawer.canvasWidth, drawer.canvasHeight, "AliceBlue");
     }
 
     setNavButtonsClick(){
