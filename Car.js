@@ -93,7 +93,6 @@ class Car {
                 //there is no cars in next road
                 if (firstCarInNextRoad == undefined) return { addX: this.speedX, addY: this.speedY, status: "full speed" };
 
-                //get the distance between the cars
                 let distBetweenCars = this.getDist(this.x + this.width, this.y, firstCarInNextRoad.x + size, firstCarInNextRoad.y);
 
                 //check if car can move at max speed

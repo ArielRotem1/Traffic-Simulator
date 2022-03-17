@@ -1,4 +1,6 @@
 class Drawer {
+
+
     setup(canvasID, sizeOfSquareRatio, lineWidth) {
         this.isMouseDown = false;
         this.mouseDownTileX = -1;
@@ -137,8 +139,6 @@ class Drawer {
             //if there is no road where the user wants to add the car to then don't add it
             if (!grid[rowOfMouse][columnOfMouse]) return;
 
-            
-
             let speed = 0.01//(size / 18) + (size / (Math.floor(Math.random() * 30) + 30));
             
             //check which side of the road the user click to know where the car should be moving on the roadType
@@ -147,10 +147,16 @@ class Drawer {
             //can add car only to HORIZONTAL or VERTICAL road
             if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.HORIZONTAL){
                 speed *= ((mousePos.y - this.yoffset) / size) - rowOfMouse >= 0.5 ? 1 : -1;
+                //if the road has car in it then don't allow to add another car to it
+                if(speed > 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.LEFT)) return;
+                if(speed < 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.RIGHT)) return;
                 grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
             }
             else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL){
                 speed *= ((mousePos.x - this.xoffset) / size) - columnOfMouse <= 0.5 ? 1 : -1;
+                //if the road has car in it then don't allow to add another car to it
+                if(speed > 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.UP)) return;
+                if(speed < 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.DOWN)) return;
                 grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
             }
         }
