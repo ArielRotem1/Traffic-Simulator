@@ -159,14 +159,14 @@ class Drawer {
                 //if the road has car in it then don't allow to add another car to it
                 if(speed > 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.LEFT)) return;
                 if(speed < 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.RIGHT)) return;
-                grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, 0, 0, "green"));
+                grid[rowOfMouse][columnOfMouse].addCar(new Car(speed, 0, "green"));
             }
             else if (grid[rowOfMouse][columnOfMouse].roadType == Road.RoadType.VERTICAL){
                 speed *= ((mousePos.x - this.xoffset) / size) - columnOfMouse <= 0.5 ? 1 : -1;
                 //if the road has car in it then don't allow to add another car to it
                 if(speed > 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.UP)) return;
                 if(speed < 0 && !grid[rowOfMouse][columnOfMouse].hasNoCarsExecptForCarsMoving(Car.MovmentDirection.DOWN)) return;
-                grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, 0, 0, "green"));
+                grid[rowOfMouse][columnOfMouse].addCar(new Car(0, speed, "green"));
             }
         }
     }

@@ -1,3 +1,13 @@
+
+/*
+Properties that this Car has alike real car:
+- MAX_SPEED
+- MIN_DIST_BETWEEN_CARS - the distance the driver of the car keeps from other cars
+- ACCELERATION
+*/
+
+const RGB_MAX_VALUE_DIVIDED_BY_100 = 255 / 100;
+
 class Car {
 
     static MovmentDirection = {
@@ -7,12 +17,13 @@ class Car {
         RIGHT: 3
     }
 
-    constructor(speedX, speedY, forceX, forceY, color) {
+    constructor(speedX, speedY, color) {
         this.width = 20;
         this.height = 10;
-        this.MIN_DIST_BETWEEN_CARS = 20;
+        this.MIN_DIST_BETWEEN_CARS = 20 + Math.floor(Math.random() * 10);
         this.MAX_SPEED = (size / 15) + (size / (Math.floor(Math.random() * 100) + 10));
-        this.acceleration = (size / 50);
+        this.OneDividedBy100OfMAX_SPEED = this.MAX_SPEED / 100;
+        this.ACCELERATION = (size / 50) + (size / (Math.floor(Math.random() * 10) + 100));
         this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN = 10;
         this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = 0;
 
@@ -37,14 +48,33 @@ class Car {
             this.y = size - this.height;
         }
 
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.forceX = forceX;
-        this.forceY = forceY;
-        this.color = color;
+        this.setSpeedX(speedX);
+        this.setSpeedY(speedY);
 
         this.nextX = 0;
         this.nextY = 0;
+    }
+
+    setSpeedX(val){
+        this.speedX = val;
+        if(val == 0) return;
+        let currentSpeedPrecentOfMAX_SPEED = Math.abs(this.speedX) / this.OneDividedBy100OfMAX_SPEED;
+    
+        this.color = `rgb(
+            ${(100 - currentSpeedPrecentOfMAX_SPEED) * RGB_MAX_VALUE_DIVIDED_BY_100},
+            ${currentSpeedPrecentOfMAX_SPEED * RGB_MAX_VALUE_DIVIDED_BY_100},
+            0)`;
+    }
+
+    setSpeedY(val){
+        this.speedY = val;
+        if(val == 0) return;
+        let currentSpeedPrecentOfMAX_SPEED = Math.abs(this.speedY) / this.OneDividedBy100OfMAX_SPEED;
+    
+        this.color = `rgb(
+            ${(100 - currentSpeedPrecentOfMAX_SPEED) * RGB_MAX_VALUE_DIVIDED_BY_100},
+            ${currentSpeedPrecentOfMAX_SPEED * RGB_MAX_VALUE_DIVIDED_BY_100},
+            0)`;
     }
 
 
@@ -336,20 +366,20 @@ class Car {
 
 
         if (this.movmentDirection == Car.MovmentDirection.RIGHT) {
-            this.speedX -= this.acceleration;
-            if (this.speedX < 0) this.speedX = 0;
+            this.setSpeedX(this.speedX - this.ACCELERATION);
+            if (this.speedX < 0) this.setSpeedX(0);
         }
         else if (this.movmentDirection == Car.MovmentDirection.LEFT) {
-            this.speedX += this.acceleration;
-            if (this.speedX > 0) this.speedX = 0;
+            this.setSpeedX(this.speedX + this.ACCELERATION);
+            if (this.speedX > 0) this.setSpeedX(0);
         }
         else if (this.movmentDirection == Car.MovmentDirection.DOWN) {
-            this.speedY -= this.acceleration;
-            if (this.speedY < 0) this.speedY = 0;
+            this.setSpeedY(this.speedY - this.ACCELERATION);
+            if (this.speedY < 0) this.setSpeedY(0);
         }
         else if (this.movmentDirection == Car.MovmentDirection.UP) {
-            this.speedY += this.acceleration;
-            if (this.speedY > 0) this.speedY = 0;
+            this.setSpeedY(this.speedY + this.ACCELERATION);
+            if (this.speedY > 0) this.setSpeedY(0);
         }
     }
 
@@ -358,20 +388,20 @@ class Car {
         this.NUMBER_OF_TIMES_FROM_LAST_ACCELERATING = this.NUMBER_OF_TIMES_BEFORE_ACCELERATING_AGAIN;
 
         if (this.movmentDirection == Car.MovmentDirection.RIGHT) {
-            this.speedX += this.acceleration;
-            if (this.speedX > this.MAX_SPEED) this.speedX = this.MAX_SPEED;
+            this.setSpeedX(this.speedX + this.ACCELERATION);
+            if (this.speedX > this.MAX_SPEED) this.setSpeedX(this.MAX_SPEED);
         }
         else if (this.movmentDirection == Car.MovmentDirection.LEFT) {
-            this.speedX -= this.acceleration;
-            if (this.speedX < -this.MAX_SPEED) this.speedX = -this.MAX_SPEED;
+            this.setSpeedX(this.speedX - this.ACCELERATION);
+            if (this.speedX < -this.MAX_SPEED) this.setSpeedX(-this.MAX_SPEED);
         }
         else if (this.movmentDirection == Car.MovmentDirection.DOWN) {
-            this.speedY += this.acceleration;
-            if (this.speedY > this.MAX_SPEED) this.speedY = this.MAX_SPEED;
+            this.setSpeedY(this.speedY + this.ACCELERATION);
+            if (this.speedY > this.MAX_SPEED) this.setSpeedY(this.MAX_SPEED);
         }
         else if (this.movmentDirection == Car.MovmentDirection.UP) {
-            this.speedY -= this.acceleration;
-            if (this.speedY < -this.MAX_SPEED) this.speedY = -this.MAX_SPEED;
+            this.setSpeedY(this.speedY - this.ACCELERATION);
+            if (this.speedY < -this.MAX_SPEED) this.setSpeedY(-this.MAX_SPEED);
         }
     }
 
